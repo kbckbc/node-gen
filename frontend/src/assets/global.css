@@ -1,0 +1,77 @@
+/* Green Light scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+  --primary: #43a047;
+  --primary-hover: #388e3c;
+  --primary-focus: rgba(67, 160, 71, 0.125);
+  --primary-inverse: #FFF;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-position: inside;
+    text-align: left;
+}
+
+.tv {
+    position: relative;
+    /* width: 500px;
+    height: 500px; */
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 0% 0% 0% 0% / 0% 0% 0% 0% ;
+    color: white;
+    box-shadow: 10px 10px rgba(0,0,0,.15);
+    transition: all .4s ease;
+}
+
+.align_left {
+    text-align: left;
+}
+
+.align_right {
+    text-align: right;
+}
+
+.margin_bottom_20 {
+    margin-bottom: 20px;
+}
+
+.color_orange {
+    color:orange;
+}
+
+.color_red {
+    color:red;
+}
+
+.float_left {
+    float:left;
+}
+
+.float_right {
+    float:right;
+}
+
+.font_size_20 {
+    font-size: 20px;
+}
+
+.font_size_30 {
+    font-size: 30px;
+}
+
+.font_size_50 {
+    font-size: 50px;
+}
+
+.cursor_pointer {
+    cursor: pointer;
+}
+
+@import "pico.min.css";
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";

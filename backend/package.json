@@ -1,0 +1,26 @@
+{
+  "name": "bear_market",
+  "version": "1.0.0",
+  "description": "A second-hand market for WashU students",
+  "main": "bearmarket.js",
+  "scripts": {
+    "test": "node bearmarket.js"
+  },
+  "author": "Byeongchan Gwak",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "connect-sqlite3": "^0.9.13",
+    "express": "^4.18.2",
+    "express-history-api-fallback": "^2.2.1",
+    "express-session": "^1.17.3",
+    "mongodb": "^4.11.0",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.10"
+  }
+}
