@@ -1,7 +1,7 @@
 const dbFilePath = "./sqlite.db";
 const fs = require("fs");
 const sqlite3 = require("sqlite3").verbose();
-const SQL = require('./dbquery.js');
+const QUERY = require('./dbquery.js');
 let connection = undefined;
 
 let db = {}
@@ -26,10 +26,11 @@ db.conn = function () {
         });
 
         // db creation
-        connection.exec(SQL.item_create);
-        connection.exec(SQL.item_comment_create);
-        connection.exec(SQL.user_create);
-        connection.exec(SQL.user_review_create);
+        connection.exec(QUERY.Item_create);
+        connection.exec(QUERY.ItemComment_create);
+        connection.exec(QUERY.User_create);
+        connection.exec(QUERY.UserReview_create);
+        connection.exec(QUERY.Favorite_create);
         
         console.log(`Connection with SQLite has been established - New DB creation, connection [${connection}]`);
       }

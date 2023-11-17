@@ -5,7 +5,7 @@
       <span v-if="$store.state.user.username !== undefined"><a @click="$router.push('/write')"><i class="material-icons float_right cursor_pointer font_size_50" >add_circle</i></a></span>
       <div v-if="$route.params.username === undefined">
         <h2>Item List</h2>
-        <h5 v-if="$store.state.user.username !== undefined">at {{ $store.state.user.mySchool }}</h5>
+        <h5 v-if="$store.state.user.username !== undefined">at {{ $store.state.user.myschool }}</h5>
       </div>
       <h2 v-else>My item List</h2>
     </header>
@@ -17,14 +17,14 @@
           <sub><i class="material-icons font_size_20 color_red">favorite</i></sub>{{ item.favorite }}
         </div>
         <br>
-        <a @click="selectItemDetail(item._id)"><img :src="$hostname + item.imageNames[0]" class="tv cursor_pointer" alt="Item image"></a>
+        <a @click="selectItemDetail(item._id)"><img :src="$hostname + item.image_names[0]" class="tv cursor_pointer" alt="Item image"></a>
       </div>
       <div>
         <div>
           <mark><b>[$ {{ item.price }}] {{ item.title }}</b></mark>
         </div>
         <div><b>User : </b><a @click="routeUserReview(item.username)" class="cursor_pointer"><sub><i class="material-icons font_size_30">person_outline</i></sub>{{ item.username }}</a></div>
-        <div><b>Where : </b>{{ item.location }} at {{ item.mySchool }}</div>
+        <div><b>Where : </b>{{ item.location }} at {{ item.myschool }}</div>
         <div><b>Post Date : </b>{{ $func.formatDate(item.date) }}</div>
         <!-- <div><b>Description : </b>{{ item.description }}</div> -->
       </div>

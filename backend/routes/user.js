@@ -2,9 +2,11 @@ const express = require('express');
 const { checkCSRF } = require('../lib/tools');
 const router = express.Router();
 const tools = require('../lib/tools')
+const db = require("../dblib/dbconn");
+const QUERY = require('../dblib/dbquery.js');
   
 router.post('/signup', function(req, res, next) {
-  console.log('auth', '/signup', 'req.body', req.body);
+  console.log('/signup', 'req.body', req.body);
 
   // prepare user data
   let data = req.body;
@@ -17,26 +19,60 @@ router.post('/signup', function(req, res, next) {
       });
   });
 
-  tools.getDb('user')
-    .then((coll) => {
-      coll.findOne({"username":req.body.username})
-        .then(result => {
-          if( result != null ) {
-            console.log(`The Username '${req.body.username}' is in use. Try another one again!`);
-            res.json({ret:0,msg:`The Username '${req.body.username}' is in use. Try another one again!`});
-          }
-          else {
-            coll.insertOne(data)
-              .then(result => {
-                console.log('insertOne', result);
-                // res.render('signup_re', {"result":1, "msg":"Your account has been created!"});
-                res.json({ret:1,msg:'sign succ'});
-              })
-          }
-        })
-        .catch(err => console.log(err));
-    })    
-    .catch(err => console.log(err));     
+  console.log('/signup', 'data', data);
+  console.log('/signup', 'QUERY.User_select', QUERY.User_select);
+  console.log('/signup', 'req.body.username', req.body.username);
+
+  db.conn().then((conn) => {
+    conn.all(QUERY.User_select, [req.body.username], (err, rows) => {
+      console.log('/signup', 'data111111111111', data);
+      if (err) {
+        throw new Error(err.message);
+      }
+
+      console.log('/signup', 'data1111111222222222', data);
+      if( rows.length != 0 ) {
+        console.log(`The Username '${req.body.username}' is in use. Try another one again!`);
+        res.json({ret:0,msg:`The Username '${req.body.username}' is in use. Try another one again!`});
+      }
+      else {
+
+        db.conn().then((conn) => {
+          conn.run(QUERY.User_insert, [data.username, data.password, data.email, data.myschool, data.joindate ], (err) => {
+            if (err) {
+              console.error(err.message);
+            }
+            res.json({ret:1,msg:'sign succ'});
+          });
+        }).catch((e) => {
+          console.error(e.message); // "oh, no!"
+        })        
+      }
+    });
+  }).catch((e) => {
+    console.error(e.message); // "oh, no!"
+  })  
+
+  // tools.getDb('user')
+  //   .then((coll) => {
+  //     coll.findOne({"username":req.body.username})
+  //       .then(result => {
+  //         if( result != null ) {
+  //           console.log(`The Username '${req.body.username}' is in use. Try another one again!`);
+  //           res.json({ret:0,msg:`The Username '${req.body.username}' is in use. Try another one again!`});
+  //         }
+  //         else {
+  //           coll.insertOne(data)
+  //             .then(result => {
+  //               console.log('insertOne', result);
+  //               // res.render('signup_re', {"result":1, "msg":"Your account has been created!"});
+  //               res.json({ret:1,msg:'sign succ'});
+  //             })
+  //         }
+  //       })
+  //       .catch(err => console.log(err));
+  //   })    
+  //   .catch(err => console.log(err));     
 });
 
 router.post('/passwordChange', function(req, res, next) {
@@ -59,25 +95,53 @@ router.post('/passwordChange', function(req, res, next) {
       });
   });
 
-  tools.getDb('user')
-    .then((coll) => {
-      coll.findOne({"username":req.body.username})
-        .then(result => {
-          if( result == null ) {
-            res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
-          }
-          else {
-            coll.updateOne({username:data.username},{$set:{password:data.password}})
-            .then(result => {
-              console.log('updateOne', result);
-              res.json({ret:1,msg:'passwordChange succ'});
-            })
-          }
-        })
-        .catch(err => console.log(err));
-    })    
-    .catch(err => console.log(err));     
+  db.conn().then((conn) => {
+    conn.all(QUERY.User_select, [req.body.username], (err, rows) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+      if( rows.length == 0 ) {
+        res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
+      }
+      else {
+
+        db.conn().then((conn) => {
+          conn.run(QUERY.User_update_passwd, [data.password, data.password, data.username], (err) => {
+            if (err) {
+              return new Error(err.message);
+            }
+            console.log('passwordChange succ');
+            res.json({ret:1,msg:'passwordChange succ'});
+          });
+        }).catch((e) => {
+          console.error(e.message); // "oh, no!"
+        }) 
+      }
+    });
+  }).catch((e) => {
+    console.error(e.message); // "oh, no!"
+  })  
+
+  // tools.getDb('user')
+  //   .then((coll) => {
+  //     coll.findOne({"username":req.body.username})
+  //       .then(result => {
+  //         if( result == null ) {
+  //           res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
+  //         }
+  //         else {
+  //           coll.updateOne({username:data.username},{$set:{password:data.password}})
+  //           .then(result => {
+  //             console.log('updateOne', result);
+  //             res.json({ret:1,msg:'passwordChange succ'});
+  //           })
+  //         }
+  //       })
+  //       .catch(err => console.log(err));
+  //   })    
+  //   .catch(err => console.log(err));     
 });  
+
 
 router.post('/schoolChange', function(req, res, next) {
   console.log('user', '/schoolChange', 'req.body', req.body);
@@ -89,28 +153,53 @@ router.post('/schoolChange', function(req, res, next) {
     return;
   }
 
-  // prepare user data
-  let data = req.body;
+  db.conn().then((conn) => {
+    conn.all(QUERY.User_select, [req.user.username], (err, rows) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+      if( rows.length == 0 ) {
+        res.json({ret:0,msg:`The Username '${req.user.username}' not found.`});
+      }
+      else {
 
-  tools.getDb('user')
-    .then((coll) => {
-      coll.findOne({"username":req.user.username})
-        .then(result => {
-          if( result == null ) {
-            res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
-          }
-          else {
-            coll.updateOne({username:req.user.username},{$set:{mySchool:data.mySchool}})
-            .then(result => {
-              console.log('updateOne', result);
-              req.user.mySchool = data.mySchool;
-              res.json({ret:1, msg:'Your school list has been chagned.'});
-            })
-          }
-        })
-        .catch(err => console.log(err));
-    })    
-    .catch(err => console.log(err));     
+        db.conn().then((conn) => {
+          conn.run(QUERY.User_update_school, [req.body.myschool, req.user.username], (err) => {
+            if (err) {
+              return new Error(err.message);
+            }
+            console.log('schoolChange succ');
+            req.user.myschool = req.body.myschool;
+            res.json({ret:1,msg:'schoolChange succ'});
+          });
+        }).catch((e) => {
+          console.error(e.message); // "oh, no!"
+        }) 
+      }
+    });
+  }).catch((e) => {
+    console.error(e.message); // "oh, no!"
+  })   
+
+  // tools.getDb('user')
+  //   .then((coll) => {
+  //     coll.findOne({"username":req.user.username})
+  //       .then(result => {
+  //         if( result == null ) {
+  //           res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
+  //         }
+  //         else {
+  //           coll.updateOne({username:req.user.username},{$set:{myschool:data.myschool}})
+  //           .then(result => {
+  //             console.log('updateOne', result);
+  //             req.user.myschool = data.myschool;
+  //             res.json({ret:1, msg:'Your school list has been chagned.'});
+  //           })
+  //         }
+  //       })
+  //       .catch(err => console.log(err));
+  //   })    
+  //   .catch(err => console.log(err));     
 }); 
 
 module.exports = router;

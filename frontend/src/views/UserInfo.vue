@@ -37,7 +37,7 @@
     <form @submit.prevent="schoolChange" method="POST">
       <div class="grid">
         <div>
-          <select v-model="mySchool">
+          <select v-model="myschool">
             <option v-for="name in $func.schoolList['MO']" :key="name" >{{ name }}</option>
           </select>
         </div>
@@ -58,7 +58,7 @@ export default {
       username: this.$store.state.user.username,
       email: this.$store.state.user.email,
       joindate: this.$func.formatDateTime(this.$store.state.user.joindate),
-      mySchool: this.$store.state.user.mySchool,
+      myschool: this.$store.state.user.myschool,
       password: '',
       password2: ''
     }
@@ -96,24 +96,24 @@ export default {
       })
     },
     chooseSchool (event) {
-      this.mySchool = event.target.value
+      this.myschool = event.target.value
     },
     removeSchool (name) {
-      this.mySchool = ''
+      this.myschool = ''
     },
     schoolChange () {
-      if (this.mySchool === '') {
+      if (this.myschool === '') {
         alert('Please choose a school!')
         return
       }
       const arg = {
         csrf: this.$store.state.user.csrf,
-        mySchool: this.mySchool
+        myschool: this.myschool
       }
       axios.post('/user/schoolChange', arg).then(res => {
         if (res.data.ret === 1) {
           alert(res.data.msg)
-          this.$store.state.user.mySchool = this.mySchool
+          this.$store.state.user.myschool = this.myschool
         } else {
           // alert error msg
           alert(res.data.msg)

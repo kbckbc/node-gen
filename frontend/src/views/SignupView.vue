@@ -31,7 +31,7 @@
         </div>
         <div>
           <label for="email">Which school is easier to deal with?(You can change it later)
-            <select v-model="mySchool">
+            <select v-model="myschool">
               <option v-for="name in $func.schoolList['MO']" :key="name" >{{ name }}</option>
             </select>
           </label>
@@ -52,22 +52,22 @@ export default {
       password: '',
       password2: '',
       email: '',
-      mySchool: ''
+      myschool: ''
     }
   },
   methods: {
     // chooseSchool (event) {
-    //   this.mySchool = event.target.value
+    //   this.myschool = event.target.value
     // },
     // removeSchool (name) {
-    //   this.mySchool = ''
+    //   this.myschool = ''
     // },
     signup () {
       if (this.password !== this.password2) {
         alert('Password does not match!')
         return
       }
-      if (this.mySchool === '') {
+      if (this.myschool === '') {
         alert('Please choose a school!')
         return
       }
@@ -75,7 +75,7 @@ export default {
         username: this.username,
         password: this.password,
         email: this.email,
-        mySchool: this.mySchool
+        myschool: this.myschool
       }
       console.log('signup', arg)
       axios.post('/user/signup', arg).then(res => {

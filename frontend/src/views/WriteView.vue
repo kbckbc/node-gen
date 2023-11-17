@@ -42,7 +42,7 @@
       <div class="grid">
         <div>
           <label>School
-            <input v-model="mySchool" disabled>
+            <input v-model="myschool" disabled>
           </label>
         </div>
         <div>
@@ -59,7 +59,7 @@
           <input ref="fileupload" type="file"  @change="selectedImage($event)" accept="image/*" multiple>
         </label>
         <div class="grid">
-          <div v-for="(name, i) in imageNames" :key="i">
+          <div v-for="(name, i) in image_names" :key="i">
             <div><a @click="deleteImage(name)"><i class="material-icons">delete</i>Delete</a></div>
             <div>
               <img :src="$hostname + name" class="tv" alt="item image">
@@ -96,10 +96,10 @@ export default {
       title: '',
       status: '0',
       price: 0,
-      mySchool: this.$store.state.user.mySchool,
+      myschool: this.$store.state.user.myschool,
       location: '',
       description: '',
-      imageNames: [],
+      image_names: [],
       images: [],
       param_id: '',
       commentUserList: [],
@@ -115,7 +115,7 @@ export default {
         this.price = res.data.detail.price
         this.location = res.data.detail.location
         this.description = res.data.detail.description
-        this.imageNames = res.data.detail.imageNames
+        this.image_names = res.data.detail.image_names
         this.buyer_username = res.data.detail.buyer_username
       })
     },
@@ -147,8 +147,8 @@ export default {
       try {
         let fileUploadMsg = ''
         for (let i = 0; i < event.target.files.length; i++) {
-          console.log('length', this.imageNames.length)
-          if (this.imageNames.length > 2) {
+          console.log('length', this.image_names.length)
+          if (this.image_names.length > 2) {
             this.$refs.fileupload.value = null
             alert('Up to 3 image files can be uploaded.')
             break
@@ -166,7 +166,7 @@ export default {
 
             // if file upload fails, then return
             if (res.data.ret === 1) {
-              this.imageNames.push(res.data.filename)
+              this.image_names.push(res.data.filename)
             } else {
               fileUploadMsg = res.data.msg
             }
@@ -186,7 +186,7 @@ export default {
     },
     insertItem () {
       console.log('WriteView.vue', 'insertItem', this.images)
-      if (this.imageNames.length === 0) {
+      if (this.image_names.length === 0) {
         alert('Upload up to 3 images of your item')
         return
       }
@@ -196,10 +196,10 @@ export default {
         title: this.title,
         status: this.status,
         price: this.price,
-        mySchool: this.mySchool,
+        myschool: this.myschool,
         location: this.location,
         description: this.description,
-        imageNames: this.imageNames
+        image_names: this.image_names
       }
 
       // if this page is doing edit
@@ -243,13 +243,13 @@ export default {
     },
     deleteImage (name) {
       console.log('deleteImage', name)
-      axios.post('/item/deleteImage', { imageNames: [name] }).then(res => {
+      axios.post('/item/deleteImage', { image_names: [name] }).then(res => {
         console.log('cancelItem', '/item/deleteImage', JSON.stringify(res.data))
         if (res.data.ret === 1) {
           // this.$router.push('/things')
-          const index = this.imageNames.indexOf(name)
+          const index = this.image_names.indexOf(name)
           if (index > -1) {
-            this.imageNames.splice(index, 1)
+            this.image_names.splice(index, 1)
           }
         } else {
           // alert error msg
@@ -258,11 +258,11 @@ export default {
       })
     },
     cancelItem () {
-      console.log('cancelItem', JSON.stringify(this.imageNames))
+      console.log('cancelItem', JSON.stringify(this.image_names))
       // if the page is doing writing
       // then delete uploaded image and go back
-      if (this.param_id === '' && this.imageNames.length !== 0) {
-        axios.post('/item/deleteImage', { imageNames: this.imageNames }).then(res => {
+      if (this.param_id === '' && this.image_names.length !== 0) {
+        axios.post('/item/deleteImage', { image_names: this.image_names }).then(res => {
           console.log('cancelItem', '/item/deleteImage', JSON.stringify(res.data))
           if (res.data.ret === 1) {
             this.$router.go(-1)

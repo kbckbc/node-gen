@@ -8,11 +8,11 @@
     <h3 v-if="favoriteList.length === 0">No favorite items :(</h3>
     <ul v-else>
       <li v-for="item in this.favoriteList" :key="item._id">
-        <a @click="selectItemDetail(item.item_id)"><img :src="$hostname + item.itemInfo[0].imageNames[0]" class="tv cursor_pointer" alt="item image"></a>
-        <code>{{ $func.formatStatus(item.itemInfo[0].status) }}</code>
-        <sub><i class="material-icons font_size_20 color_red">favorite</i></sub>{{ item.itemInfo[0].favorite }}
-        [$ {{ item.itemInfo[0].price }}] {{ item.itemInfo[0].title }},
-        <b>Where :</b> {{ item.itemInfo[0].location }} at {{ item.itemInfo[0].mySchool }}
+        <a @click="selectItemDetail(item._id)"><img :src="$hostname + item.image_names[0]" class="tv cursor_pointer" alt="item image"></a>
+        <code>{{ $func.formatStatus(item.status) }}</code>
+        <sub><i class="material-icons font_size_20 color_red">favorite</i></sub>{{ item.favorite }}
+        [$ {{ item.price }}] {{ item.title }},
+        <b>Where :</b> {{ item.location }} at {{ item.myschool }}
       </li>
     </ul>
   </article>

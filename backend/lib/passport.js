@@ -7,7 +7,9 @@ module.exports = (app) => {
   // const sessionTime = 5000; // 1000 is one second
   const tools = require('./tools');
   var { randomBytes } = require('crypto');
-
+  const db = require("../dblib/dbconn");
+  const QUERY = require('../dblib/dbquery.js');
+    
   app.use(session({
     secret: 'keyboard cat',
     resave: false,
@@ -35,27 +37,51 @@ module.exports = (app) => {
   passport.use(new LocalStrategy(function verify(username, password, cb) {
     console.log('LocalStrategy called', username, password);
     
-    tools.getDb("user")
-    .then((coll) => {
-      coll.findOne({username:username})
-        .then(result => {
-          console.log('passport', 'verify', 'result', result);
-          if( result == null ) {
-            return cb(null, false, { message: `There's no such user. Sign up if you're new here`});  
-          }
+    db.conn().then((conn) => {
+      conn.get(QUERY.User_select, [username], (err, row) => {
+        if (err) {
+          throw new Error(err.message);
+        }
+
+        if( row == undefined ) {
+          return cb(null, false, { message: `There's no such user. Sign up if you're new here`});  
+        }
+        
+        if(require('bcryptjs').compareSync(password, row.password)) {
+          row.csrf = randomBytes(100).toString('base64');;
+          console.log('rowrow', row);
+          return cb(null, row);
+        }
+        else {
+          return cb(null, false, { message: 'Incorrect username or password.' });  
+        }          
+      });
+    }).catch((e) => {
+      console.error(e.message); // "oh, no!"
+    })  
+
+
+    // tools.getDb("user")
+    // .then((coll) => {
+    //   coll.findOne({username:username})
+    //     .then(result => {
+    //       console.log('passport', 'verify', 'result', result);
+    //       if( result == null ) {
+    //         return cb(null, false, { message: `There's no such user. Sign up if you're new here`});  
+    //       }
           
-          if(require('bcryptjs').compareSync(password, result.password)) {
-            result.csrf = randomBytes(100).toString('base64');;
-            delete result["password"];
-            return cb(null, result);
-          }
-          else {
-            return cb(null, false, { message: 'Incorrect username or password.' });  
-          }          
-        })
-        .catch(err => console.log(err));
-    })    
-    .catch(err => console.log(err))
+    //       if(require('bcryptjs').compareSync(password, result.password)) {
+    //         result.csrf = randomBytes(100).toString('base64');;
+    //         delete result["password"];
+    //         return cb(null, result);
+    //       }
+    //       else {
+    //         return cb(null, false, { message: 'Incorrect username or password.' });  
+    //       }          
+    //     })
+    //     .catch(err => console.log(err));
+    // })    
+    // .catch(err => console.log(err))
   }));
 
   return passport;

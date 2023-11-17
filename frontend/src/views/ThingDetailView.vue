@@ -13,7 +13,7 @@
       </span>
       <h2>Item Detail</h2>
     </header>
-    <img v-for="(name, i) in itemDetail.imageNames" :src="$hostname + name" :key="i" class="tv" alt="item image"/>
+    <img v-for="(name, i) in itemDetail.image_names" :src="$hostname + name" :key="i" class="tv" alt="item image"/>
     <footer>
       <div>
         <code>{{ $func.formatStatus(itemDetail.status) }}</code>
@@ -22,7 +22,7 @@
       <div><b>Title : </b>{{ itemDetail.title }}</div>
       <div><b>Price : </b>$ {{ itemDetail.price }}</div>
       <div><b>User : </b><a @click="routeUserReview(itemDetail.username)" class="cursor_pointer"><sub><i class="material-icons font_size_30">person_outline</i></sub>{{ itemDetail.username }}</a></div>
-      <div><b>Where : </b>{{ itemDetail.location }} at {{ itemDetail.mySchool }}</div>
+      <div><b>Where : </b>{{ itemDetail.location }} at {{ itemDetail.myschool }}</div>
       <div><b>Post Date : </b>{{ $func.formatDate(itemDetail.date) }}</div>
       <div><b>Description : </b>{{ itemDetail.description }}</div>
     </footer>

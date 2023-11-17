@@ -45,14 +45,14 @@ else {
 global.UPLOAD_FOLDER = '/uploads';
 console.log('print:', process.env.VUE_APP_ROOT_API);
 
-global.checkLogin = (req) => {
-  if(req.user == undefined) {
-    return false;
-  }
-  else {
-    return true;
-  }
-}
+// global.checkLogin = (req) => {
+//   if(req.user == undefined) {
+//     return false;
+//   }
+//   else {
+//     return true;
+//   }
+// }
 //////////////////
 // Setting global variables end
 //////////////////
