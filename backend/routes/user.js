@@ -52,27 +52,7 @@ router.post('/signup', function(req, res, next) {
   }).catch((e) => {
     console.error(e.message); // "oh, no!"
   })  
-
-  // tools.getDb('user')
-  //   .then((coll) => {
-  //     coll.findOne({"username":req.body.username})
-  //       .then(result => {
-  //         if( result != null ) {
-  //           console.log(`The Username '${req.body.username}' is in use. Try another one again!`);
-  //           res.json({ret:0,msg:`The Username '${req.body.username}' is in use. Try another one again!`});
-  //         }
-  //         else {
-  //           coll.insertOne(data)
-  //             .then(result => {
-  //               console.log('insertOne', result);
-  //               // res.render('signup_re', {"result":1, "msg":"Your account has been created!"});
-  //               res.json({ret:1,msg:'sign succ'});
-  //             })
-  //         }
-  //       })
-  //       .catch(err => console.log(err));
-  //   })    
-  //   .catch(err => console.log(err));     
+  
 });
 
 router.post('/passwordChange', function(req, res, next) {
@@ -121,25 +101,6 @@ router.post('/passwordChange', function(req, res, next) {
   }).catch((e) => {
     console.error(e.message); // "oh, no!"
   })  
-
-  // tools.getDb('user')
-  //   .then((coll) => {
-  //     coll.findOne({"username":req.body.username})
-  //       .then(result => {
-  //         if( result == null ) {
-  //           res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
-  //         }
-  //         else {
-  //           coll.updateOne({username:data.username},{$set:{password:data.password}})
-  //           .then(result => {
-  //             console.log('updateOne', result);
-  //             res.json({ret:1,msg:'passwordChange succ'});
-  //           })
-  //         }
-  //       })
-  //       .catch(err => console.log(err));
-  //   })    
-  //   .catch(err => console.log(err));     
 });  
 
 
@@ -180,26 +141,6 @@ router.post('/schoolChange', function(req, res, next) {
   }).catch((e) => {
     console.error(e.message); // "oh, no!"
   })   
-
-  // tools.getDb('user')
-  //   .then((coll) => {
-  //     coll.findOne({"username":req.user.username})
-  //       .then(result => {
-  //         if( result == null ) {
-  //           res.json({ret:0,msg:`The Username '${req.body.username}' not found.`});
-  //         }
-  //         else {
-  //           coll.updateOne({username:req.user.username},{$set:{myschool:data.myschool}})
-  //           .then(result => {
-  //             console.log('updateOne', result);
-  //             req.user.myschool = data.myschool;
-  //             res.json({ret:1, msg:'Your school list has been chagned.'});
-  //           })
-  //         }
-  //       })
-  //       .catch(err => console.log(err));
-  //   })    
-  //   .catch(err => console.log(err));     
 }); 
 
 module.exports = router;
