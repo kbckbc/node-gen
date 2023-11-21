@@ -408,6 +408,77 @@ router.post('/delete', (req, res) => {
 });
 
 
+// Add or remove from the favorite
+//   input: 'inc' or 'dec', {username, _id, date}
+//   return: {ret: 0 or 1, msg: message}
+// 1. Check if it's already a favorite item or not
+// 2. Inc or dec the count from the Item
+// 3. Insert the id of the Item into the Favorite
+
+function addRemoveFavorite(type, argv, res) {
+    // add some information more into the data object
+    // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
+
+    console.log('item.js','/addRemoveFavorite', 'argv', argv);
+
+    let param = [];
+    param.push(argv.username);
+    param.push(argv.id);
+
+    db.conn().then((conn) => {
+        conn.get(QUERY.Favorite_select, param, (err, row) => {
+            if (err) {
+                throw new Error(err.message);
+            }
+            console.log('item.js','/addRemoveFavorite','rows', row)
+
+            if((type=='inc' && row == undefined) || (type='dec' && row != undefined)) {
+                param = [];
+                param.push(argv.id);
+                            
+                console.log('item.js','/addRemoveFavorite', 'param', param);
+            
+                db.conn().then((conn) => {
+                    let query = type == 'inc' ? QUERY.Item_inc_favorite : QUERY.Item_dec_favorite;
+                    conn.run(query, param, (err) => {
+                        if (err) {
+                          console.error(err.message);
+                        }
+                        console.log('item.js','/addRemoveFavorite', 'favorite update succ');
+
+                        param = [];
+                        param.push(argv.username);
+                        param.push(argv.id);
+                        param.push(argv.date);
+                                    
+                        console.log('item.js','/addRemoveFavorite', 'param', param);
+                    
+                        db.conn().then((conn) => {
+                            let query = type == 'inc' ? QUERY.Favorite_insert : QUERY.Favorite_delete;
+                            conn.run(query, param, (err) => {
+                                if (err) {
+                                  console.error(err.message);
+                                }
+                                console.log('item.js','/addRemoveFavorite', 'favorite inc or dec succ');
+                                res.json(type=='inc' ? 
+                                    {ret:1, msg:'Added to your favorite list!'} : 
+                                    {ret:1, msg:'Removed to your favorite list!'}
+                                )
+                            });
+                        }).catch((e) => {
+                        console.error(e.message); // "oh, no!"
+                        })                            
+                    });
+                }).catch((e) => {
+                console.error(e.message); // "oh, no!"
+                }) 
+            }
+        });
+    }).catch((e) => {
+        console.error(e.message); // "oh, no!"
+    })
+}
+
 router.post('/addFavorite', (req, res) => {
     console.log('item.js','/addFavorite', 'req.body', JSON.stringify(req.body));
     console.log('item.js','/addFavorite', 'req.user', JSON.stringify(req.user));
@@ -419,67 +490,14 @@ router.post('/addFavorite', (req, res) => {
       return;
     }
 
+    let param = 
+    {   'username': req.user.username,
+        'id': req.body._id,
+        'date': req.Date.now()    
+    }
+    addRemoveFavorite('dec', param, res)
 
-    // add some information more into the data object
-    // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
-    let param = [];
-    param.push(req.user.username);
-    param.push(req.body._id);
-
-    console.log('item.js','/addFavorite', 'param', param);
-
-    db.conn().then((conn) => {
-        conn.get(QUERY.Favorite_select, param, (err, row) => {
-            if (err) {
-                throw new Error(err.message);
-            }
-            console.log('item.js','/addFavorite','rows', row)
-
-            if(row == undefined) {
-                let param = [];
-                param.push(req.body._id);
-                            
-                console.log('item.js','/addFavorite', 'param', param);
-            
-                db.conn().then((conn) => {
-                    conn.run(QUERY.Item_inc_favorite, param, (err) => {
-                        if (err) {
-                          console.error(err.message);
-                        }
-                        console.log('item.js','/addFavorite', 'favorite update succ');
-
-
-                        param = [];
-                        param.push(req.user.username);
-                        param.push(req.body._id);
-                        param.push(Date.now());
-                                    
-                        console.log('item.js','/addFavorite', 'param', param);
-                    
-                        db.conn().then((conn) => {
-                            conn.run(QUERY.Favorite_insert, param, (err) => {
-                                if (err) {
-                                  console.error(err.message);
-                                }
-                                console.log('item.js','/addFavorite', 'favorite insert succ');
-                                let retObj = {ret:1, msg:'Added to your favorite list!'};
-                                res.json(retObj);                        
-                            });
-                        }).catch((e) => {
-                        console.error(e.message); // "oh, no!"
-                        })                            
-                    });
-                }).catch((e) => {
-                console.error(e.message); // "oh, no!"
-                }) 
-
-
-            
-            }
-        });
-    }).catch((e) => {
-        console.error(e.message); // "oh, no!"
-    })
+ 
     
     // check before add favorite
     // tools.getDb('favorite').then(coll => {
@@ -522,65 +540,15 @@ router.post('/deleteFavorite', (req, res) => {
       return;
     }
 
-    // add some information more into the data object
-    // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
-    let param = [];
-    param.push(req.user.username);
-    param.push(req.body._id);
+    let param = 
+    {   'username': req.user.username,
+        'id': req.body._id,
+        'date': Date.now()    
+    }
+    addRemoveFavorite('dec', param, res)
+     
 
-    console.log('item.js','/deleteFavorite', 'param', param);
-
-    db.conn().then((conn) => {
-        conn.get(QUERY.Favorite_select, param, (err, row) => {
-            if (err) {
-                throw new Error(err.message);
-            }
-            console.log('item.js','/deleteFavorite','rows', row)
-
-            if(row != undefined) {
-                let param = [];
-                param.push(req.body._id);
-                            
-                console.log('item.js','/deleteFavorite', 'param', param);
-            
-                db.conn().then((conn) => {
-                    conn.run(QUERY.Item_dec_favorite, param, (err) => {
-                        if (err) {
-                          console.error(err.message);
-                        }
-                        console.log('item.js','/deleteFavorite', 'favorite update succ');
-
-
-                        param = [];
-                        param.push(req.user.username);
-                        param.push(req.body._id);
-                                    
-                        console.log('item.js','/deleteFavorite', 'param', param);
-                    
-                        db.conn().then((conn) => {
-                            conn.run(QUERY.Favorite_delete, param, (err) => {
-                                if (err) {
-                                  console.error(err.message);
-                                }
-                                console.log('item.js','/deleteFavorite', 'favorite delete succ');
-                                let retObj = {ret:1, msg:'Deleted from your favorite list!'};
-                                res.json(retObj);                        
-                            });
-                        }).catch((e) => {
-                        console.error(e.message); // "oh, no!"
-                        })                         
-                    });
-                }).catch((e) => {
-                console.error(e.message); // "oh, no!"
-                }) 
-
-
-               
-            }
-        });
-    }).catch((e) => {
-        console.error(e.message); // "oh, no!"
-    })    
+  
     // check before add favorite
     // tools.getDb('favorite').then(coll => {
     //     coll.findOne({username: req.user.username, item_id: req.body._id}).then(data => {
