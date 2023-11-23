@@ -20,7 +20,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 
 router.post('/insert', (req, res) => {
-    console.log('item.js','/insert', JSON.stringify(req.body));
+    tools.log('item.js','/insert', JSON.stringify(req.body));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -45,7 +45,7 @@ router.post('/insert', (req, res) => {
     data.push(0); // favorite
     data.push(''); // buyer_username
 
-    console.log('item.js','/insert', 'data', data);
+    tools.log('item.js','/insert', 'data', data);
 
     db.conn().then((conn) => {
         conn.run(QUERY.Item_insert, data, (err) => {
@@ -60,7 +60,7 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-    console.log('item.js','/update', JSON.stringify(req.body));
+    tools.log('item.js','/update', JSON.stringify(req.body));
 
     //CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -83,7 +83,7 @@ router.post('/update', (req, res) => {
     data.push(req.body.buyer_username);
     data.push(req.body.id);
 
-    console.log('item.js','/update', 'data', data);
+    tools.log('item.js','/update', 'data', data);
 
     db.conn().then((conn) => {
         conn.run(QUERY.Item_update, data, (err) => {
@@ -98,8 +98,8 @@ router.post('/update', (req, res) => {
 });
 
 router.post('/insertImage', upload.single('image'), function(req, res) {
-    console.log('item.js','/insertImage1', JSON.stringify(req.body));
-    console.log('file', req.file);
+    tools.log('item.js','/insertImage1', JSON.stringify(req.body));
+    tools.log('file', req.file);
 
     // CSRF check
         // csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -108,7 +108,7 @@ router.post('/insertImage', upload.single('image'), function(req, res) {
         //         if (err) {
         //             throw err;
         //         }
-        //         console.log("Delete File successfully.");
+        //         tools.log("Delete File successfully.");
         //         res.json({ret:0, msg:'File upload failed because of CSRF!'});
         //         return;
         //     });        
@@ -118,8 +118,8 @@ router.post('/insertImage', upload.single('image'), function(req, res) {
 });
 
 router.post('/deleteImage', (req, res) => {
-    console.log('item.js','/deleteImage', JSON.stringify(req.body));
-    console.log('file', req.file);
+    tools.log('item.js','/deleteImage', JSON.stringify(req.body));
+    tools.log('file', req.file);
 
     // CSRF check
     // csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -143,7 +143,7 @@ router.post('/deleteImage', (req, res) => {
   
 
 router.post('/list', (req, res) => {
-    console.log('item.js','/list', JSON.stringify(req.body));
+    tools.log('item.js','/list', JSON.stringify(req.body));
 
 
     let param = [];
@@ -151,7 +151,7 @@ router.post('/list', (req, res) => {
     param.push(req.user == undefined ? null : req.user.myschool);
     param.push(req.body.startFrom);
     param.push(req.body.limitCnt);
-    console.log('item.js','/list', 'param', param);
+    tools.log('item.js','/list', 'param', param);
 
     db.conn().then((conn) => {
         conn.all(QUERY.Item_select, param, (err, rows) => {
@@ -163,7 +163,7 @@ router.post('/list', (req, res) => {
                 row.image_names = row.image_names.split(',');
             });
 
-            console.log('rows2', rows)
+            tools.log('rows2', rows)
             res.json({ret:1, items:rows});
         });
     }).catch((e) => {
@@ -173,7 +173,7 @@ router.post('/list', (req, res) => {
 
 
 router.post('/detail', (req, res) => {
-    console.log('item.js','/detail', JSON.stringify(req.body));
+    tools.log('item.js','/detail', JSON.stringify(req.body));
 
     db.conn().then((conn) => {
         conn.get(QUERY.Item_select_one, [req.body.id], (err, row) => {
@@ -183,7 +183,7 @@ router.post('/detail', (req, res) => {
 
             row.image_names = row.image_names.split(',');
 
-            console.log('item.js','/detail','result', row)
+            tools.log('item.js','/detail','result', row)
             res.json({ret:1, detail:row});
         });
     }).catch((e) => {
@@ -192,7 +192,7 @@ router.post('/detail', (req, res) => {
 });
 
 router.post('/insertComment', (req, res) => {
-    console.log('item.js','/insertComment', JSON.stringify(req.body));
+    tools.log('item.js','/insertComment', JSON.stringify(req.body));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -216,7 +216,7 @@ router.post('/insertComment', (req, res) => {
     data.push(req.body.status);
     data.push(Date.now());
     data.push(req.user.username);
-    console.log('item.js','/insertComment', 'data', data);
+    tools.log('item.js','/insertComment', 'data', data);
 
     db.conn().then((conn) => {
         conn.run(QUERY.ItemComment_insert, data, (err) => {
@@ -231,7 +231,7 @@ router.post('/insertComment', (req, res) => {
 });
 
 router.post('/deleteComment', (req, res) => {
-    console.log('item.js','/deleteComment', JSON.stringify(req.body));
+    tools.log('item.js','/deleteComment', JSON.stringify(req.body));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -241,7 +241,7 @@ router.post('/deleteComment', (req, res) => {
     }
 
     let data = [req.body._id];
-    console.log('item.js','/deleteComment', 'data', data);
+    tools.log('item.js','/deleteComment', 'data', data);
 
     db.conn().then((conn) => {
         conn.run(QUERY.ItemComment_delete, data, (err) => {
@@ -256,10 +256,10 @@ router.post('/deleteComment', (req, res) => {
 });
 
 router.post('/commentList', (req, res) => {
-    console.log('item.js','/commentList', JSON.stringify(req.body));
+    tools.log('item.js','/commentList', JSON.stringify(req.body));
 
     let data = [req.body.id];
-    console.log('item.js','/commentList', 'data', data);
+    tools.log('item.js','/commentList', 'data', data);
 
     db.conn().then((conn) => {
         conn.all(QUERY.ItemComment_select, data, (err, rows) => {
@@ -267,7 +267,7 @@ router.post('/commentList', (req, res) => {
                 throw new Error(err.message);
             }
 
-            console.log('item.js','/commentList', 'result', rows);
+            tools.log('item.js','/commentList', 'result', rows);
             res.json({ret:1, commentList:rows});
         });
     }).catch((e) => {
@@ -276,7 +276,7 @@ router.post('/commentList', (req, res) => {
 });
 
 router.post('/delete', (req, res) => {
-    console.log('item.js','/delete', JSON.stringify(req.body));
+    tools.log('item.js','/delete', JSON.stringify(req.body));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -287,14 +287,14 @@ router.post('/delete', (req, res) => {
 
 
     let data = [req.body._id];
-    console.log('item.js','/delete', 'param', data);
+    tools.log('item.js','/delete', 'param', data);
 
     db.conn().then((conn) => {
         conn.get(QUERY.Item_select_one, data, (err, row) => {
             if (err) {
                 throw new Error(err.message);
             }
-            console.log('rows', row)
+            tools.log('rows', row)
 
             for(imageName of row.image_names.split(',')) {
                 fs.unlink(global.UPLOAD_FOLDER + '/' + imageName, (err) => {
@@ -317,8 +317,8 @@ router.post('/delete', (req, res) => {
 });
 
 router.post('/addFavorite', (req, res) => {
-    console.log('item.js','/addFavorite', 'req.body', JSON.stringify(req.body));
-    console.log('item.js','/addFavorite', 'req.user', JSON.stringify(req.user));
+    tools.log('item.js','/addFavorite', 'req.body', JSON.stringify(req.body));
+    tools.log('item.js','/addFavorite', 'req.user', JSON.stringify(req.user));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -336,8 +336,8 @@ router.post('/addFavorite', (req, res) => {
 });
 
 router.post('/deleteFavorite', (req, res) => {
-    console.log('item.js','/deleteFavorite', JSON.stringify(req.body));
-    console.log('item.js','/deleteFavorite', JSON.stringify(req.user));
+    tools.log('item.js','/deleteFavorite', JSON.stringify(req.body));
+    tools.log('item.js','/deleteFavorite', JSON.stringify(req.user));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -355,14 +355,14 @@ router.post('/deleteFavorite', (req, res) => {
 });
 
 router.post('/selectFavorite', (req, res) => {
-    console.log('item.js','/selectFavorite', JSON.stringify(req.body));
+    tools.log('item.js','/selectFavorite', JSON.stringify(req.body));
 
 // add some information more into the data object
     // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
     let param = [];
     param.push(req.user.username);
 
-    console.log('item.js','/selectFavorite', 'param', param);
+    tools.log('item.js','/selectFavorite', 'param', param);
 
     db.conn().then((conn) => {
         conn.all(QUERY.Favorite_select_item_list, param, (err, rows) => {
@@ -374,7 +374,7 @@ router.post('/selectFavorite', (req, res) => {
                 row.image_names = row.image_names.split(',');
             });
 
-            console.log('item.js','/selectFavorite', 'rows', rows);
+            tools.log('item.js','/selectFavorite', 'rows', rows);
 
             res.json({ret:1, items:rows});
         });
@@ -384,14 +384,14 @@ router.post('/selectFavorite', (req, res) => {
 });
 
 router.post('/selectFavoriteYn', (req, res) => {
-    console.log('item.js','/selectFavoriteYn', JSON.stringify(req.body));
+    tools.log('item.js','/selectFavoriteYn', JSON.stringify(req.body));
 
     db.conn().then((conn) => {
         conn.get(QUERY.Favorite_select, [req.user.username, req.body.id], (err, row) => {
             if (err) {
                 throw new Error(err.message);
             }
-            console.log('item.js','/selectFavoriteYn','rows', row)
+            tools.log('item.js','/selectFavoriteYn','rows', row)
 
             if (row == null) {
                 res.json({ret:0});
@@ -414,7 +414,7 @@ function addRemoveFavorite(type, argv, res) {
     // add some information more into the data object
     // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
 
-    console.log('item.js','/addRemoveFavorite', 'argv', argv);
+    tools.log('item.js','/addRemoveFavorite', 'argv', argv);
 
     let param = [];
     param.push(argv.username);
@@ -425,13 +425,13 @@ function addRemoveFavorite(type, argv, res) {
             if (err) {
                 throw new Error(err.message);
             }
-            console.log('item.js','/addRemoveFavorite','rows', row)
+            tools.log('item.js','/addRemoveFavorite','rows', row)
 
             if((type=='inc' && row == undefined) || (type='dec' && row != undefined)) {
                 param = [];
                 param.push(argv.id);
                             
-                console.log('item.js','/addRemoveFavorite', 'param', param);
+                tools.log('item.js','/addRemoveFavorite', 'param', param);
             
                 db.conn().then((conn) => {
                     let query = type == 'inc' ? QUERY.Item_inc_favorite : QUERY.Item_dec_favorite;
@@ -439,14 +439,14 @@ function addRemoveFavorite(type, argv, res) {
                         if (err) {
                           console.error(err.message);
                         }
-                        console.log('item.js','/addRemoveFavorite', 'favorite update succ');
+                        tools.log('item.js','/addRemoveFavorite', 'favorite update succ');
 
                         param = [];
                         param.push(argv.username);
                         param.push(argv.id);
                         param.push(argv.date);
                                     
-                        console.log('item.js','/addRemoveFavorite', 'param', param);
+                        tools.log('item.js','/addRemoveFavorite', 'param', param);
                     
                         db.conn().then((conn) => {
                             let query = type == 'inc' ? QUERY.Favorite_insert : QUERY.Favorite_delete;
@@ -454,7 +454,7 @@ function addRemoveFavorite(type, argv, res) {
                                 if (err) {
                                   console.error(err.message);
                                 }
-                                console.log('item.js','/addRemoveFavorite', 'favorite inc or dec succ');
+                                tools.log('item.js','/addRemoveFavorite', 'favorite inc or dec succ');
                                 res.json(type=='inc' ? 
                                     {ret:1, msg:'Added to your favorite list!'} : 
                                     {ret:1, msg:'Removed to your favorite list!'}

@@ -1,3 +1,5 @@
+const tools = require('../lib/tools')
+
 module.exports = (app) => {
   // passport
   const passport = require('passport');
@@ -35,7 +37,7 @@ module.exports = (app) => {
 
   const LocalStrategy = require('passport-local').Strategy;
   passport.use(new LocalStrategy(function verify(username, password, cb) {
-    console.log('LocalStrategy called', username, password);
+    tools.log('LocalStrategy called', username, password);
     
     db.conn().then((conn) => {
       conn.get(QUERY.User_select, [username], (err, row) => {
@@ -49,7 +51,7 @@ module.exports = (app) => {
         
         if(require('bcryptjs').compareSync(password, row.password)) {
           row.csrf = randomBytes(100).toString('base64');;
-          console.log('rowrow', row);
+          tools.log('rowrow', row);
           return cb(null, row);
         }
         else {
@@ -57,7 +59,7 @@ module.exports = (app) => {
         }          
       });
     }).catch((e) => {
-      console.error(e.message); // "oh, no!"
+      tools.error(e.message); // "oh, no!"
     })  
 
 

@@ -6,7 +6,7 @@ const db = require("../dblib/dbconn");
 const QUERY = require('../dblib/dbquery.js');
   
 router.post('/signup', function(req, res, next) {
-  console.log('/signup', 'req.body', req.body);
+  tools.log('/signup', 'req.body', req.body);
 
   // prepare user data
   let data = req.body;
@@ -19,20 +19,20 @@ router.post('/signup', function(req, res, next) {
       });
   });
 
-  console.log('/signup', 'data', data);
-  console.log('/signup', 'QUERY.User_select', QUERY.User_select);
-  console.log('/signup', 'req.body.username', req.body.username);
+  tools.log('/signup', 'data', data);
+  tools.log('/signup', 'QUERY.User_select', QUERY.User_select);
+  tools.log('/signup', 'req.body.username', req.body.username);
 
   db.conn().then((conn) => {
     conn.all(QUERY.User_select, [req.body.username], (err, rows) => {
-      console.log('/signup', 'data111111111111', data);
+      tools.log('/signup', 'data111111111111', data);
       if (err) {
         throw new Error(err.message);
       }
 
-      console.log('/signup', 'data1111111222222222', data);
+      tools.log('/signup', 'data1111111222222222', data);
       if( rows.length != 0 ) {
-        console.log(`The Username '${req.body.username}' is in use. Try another one again!`);
+        tools.log(`The Username '${req.body.username}' is in use. Try another one again!`);
         res.json({ret:0,msg:`The Username '${req.body.username}' is in use. Try another one again!`});
       }
       else {
@@ -56,7 +56,7 @@ router.post('/signup', function(req, res, next) {
 });
 
 router.post('/passwordChange', function(req, res, next) {
-  // console.log('auth', '/passwordChange', 'req.body', req.body);
+  // tools.log('auth', '/passwordChange', 'req.body', req.body);
 
   // CSRF check
   csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -90,7 +90,7 @@ router.post('/passwordChange', function(req, res, next) {
             if (err) {
               return new Error(err.message);
             }
-            console.log('passwordChange succ');
+            tools.log('passwordChange succ');
             res.json({ret:1,msg:'passwordChange succ'});
           });
         }).catch((e) => {
@@ -105,7 +105,7 @@ router.post('/passwordChange', function(req, res, next) {
 
 
 router.post('/schoolChange', function(req, res, next) {
-  console.log('user', '/schoolChange', 'req.body', req.body);
+  tools.log('user', '/schoolChange', 'req.body', req.body);
 
   // CSRF check
   csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -129,7 +129,7 @@ router.post('/schoolChange', function(req, res, next) {
             if (err) {
               return new Error(err.message);
             }
-            console.log('schoolChange succ');
+            tools.log('schoolChange succ');
             req.user.myschool = req.body.myschool;
             res.json({ret:1,msg:'schoolChange succ'});
           });

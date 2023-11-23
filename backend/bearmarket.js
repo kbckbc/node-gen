@@ -3,6 +3,7 @@ const express = require('express');
 app = express();
 var flash = require('connect-flash');
 var fallback = require('express-history-api-fallback')
+const tools = require('./lib/tools')
 
 
 // middleware
@@ -25,11 +26,10 @@ const passport = require('./lib/passport.js')(app);
 //////////////////
 // Setting global variables start
 //////////////////
-global.debug = true;
 // when test on Local
 // mongodb should be install on local
-if(global.debug) {
-  console.log('global.debug true');
+if(true) {
+  tools.log('TEST MODE');
   global.PORT = 3000;
   global.DB_URI = 'mongodb://0.0.0.0:27017/';
   global.DB_NAME = 'bearmarketDB';
@@ -37,13 +37,13 @@ if(global.debug) {
 // when deploy
 // set DB_URI on fly.io Server as a Secret variable
 else {
-  console.log('global.debug false');
+  tools.log('DEPLOY MODE');
   global.PORT = 3000;
   global.DB_URI = process.env.DB_URI;
   global.DB_NAME = 'bearmarketDB';
 }
 global.UPLOAD_FOLDER = '/uploads';
-console.log('print:', process.env.VUE_APP_ROOT_API);
+tools.log('print:', process.env.VUE_APP_ROOT_API);
 
 // global.checkLogin = (req) => {
 //   if(req.user == undefined) {
@@ -68,5 +68,5 @@ app.use('/admin', require('./routes/admin'));
 // start app
 const port = global.PORT;
 app.listen(port, () => {
-    console.log(`listening at ${port}`);
+  tools.log(`listening at ${port}`);
 });

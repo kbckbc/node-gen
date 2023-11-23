@@ -2,6 +2,7 @@ const dbFilePath = "./sqlite.db";
 const fs = require("fs");
 const sqlite3 = require("sqlite3").verbose();
 const QUERY = require('./dbquery.js');
+const tools = require('../lib/tools')
 let connection = undefined;
 
 let db = {}
@@ -17,7 +18,7 @@ db.conn = function () {
             return reject(err);
           }
         });
-        console.log(`Connection with SQLite has been established - Get a exist DB, connection [${connection}]`);
+        tools.log(`Connection with SQLite has been established - Get a exist DB, connection [${connection}]`);
       } else {
         connection = new sqlite3.Database(dbFilePath, (err) => {
           if (err) {
@@ -32,7 +33,7 @@ db.conn = function () {
         connection.exec(QUERY.UserReview_create);
         connection.exec(QUERY.Favorite_create);
         
-        console.log(`Connection with SQLite has been established - New DB creation, connection [${connection}]`);
+        tools.log(`Connection with SQLite has been established - New DB creation, connection [${connection}]`);
       }
     }
 
@@ -49,14 +50,14 @@ db.close = function () {
         if (err) {
           return reject(err);
         }
-        console.log('db.close(): Close the database connection.');
+        tools.log('db.close(): Close the database connection.');
         
         fs.unlink(dbFilePath, function(err){
           if(err) {
             return reject(err);
           }
           else {
-            console.log('db.close(): file deleted successfully.');
+            tools.log('db.close(): file deleted successfully.');
             connection = undefined;
             return resolve(connection);
           }

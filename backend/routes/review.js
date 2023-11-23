@@ -7,8 +7,8 @@ const db = require("../dblib/dbconn");
 const QUERY = require('../dblib/dbquery.js');
   
 router.post('/insertUserReview', (req, res) => {
-    console.log('review.js','/insertUserReview', 'body', JSON.stringify(req.body));
-    console.log('review.js','/insertUserReview', 'user', JSON.stringify(req.user));
+    tools.log('review.js','/insertUserReview', 'body', JSON.stringify(req.body));
+    tools.log('review.js','/insertUserReview', 'user', JSON.stringify(req.user));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -30,12 +30,12 @@ router.post('/insertUserReview', (req, res) => {
 
     // INSERT INTO UserReview (username, score, comment, date, buyer_username) values (?,?,?,?,?);
     db.conn().then((conn) => {
-        console.log('review.js','/insertUserReview', 'param1', param);
+        tools.log('review.js','/insertUserReview', 'param1', param);
         conn.get(QUERY.Item_select_one_which_I_bought, param, (err, row) => {
             if (err) {
                 throw new Error(err.message);
             }
-            console.log('rows', row)
+            tools.log('rows', row)
 
             if( row != undefined ) {
                 res.json({ret:0,msg:`You've already left a comment. One comment per trading!`});
@@ -48,7 +48,7 @@ router.post('/insertUserReview', (req, res) => {
                 param.push(Date.now())
                 param.push(req.user.username)
 
-                console.log('review.js','/insertUserReview', 'param2', param);
+                tools.log('review.js','/insertUserReview', 'param2', param);
                 conn.run(QUERY.UserReview_insert, param, (err, row) => {
                     if (err) {
                         throw new Error(err.message);
@@ -66,7 +66,7 @@ router.post('/insertUserReview', (req, res) => {
 });
 
 router.post('/deleteUserReview', (req, res) => {
-    console.log('review.js','/deleteUserReview', JSON.stringify(req.body));
+    tools.log('review.js','/deleteUserReview', JSON.stringify(req.body));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -78,7 +78,7 @@ router.post('/deleteUserReview', (req, res) => {
     let param = [];
 
     param.push(req.body._id);
-    console.log('review.js','/deleteUserReview', 'data', param);
+    tools.log('review.js','/deleteUserReview', 'data', param);
 
     db.conn().then((conn) => {
         conn.run(QUERY.UserReview_delete, data, (err) => {
@@ -93,18 +93,18 @@ router.post('/deleteUserReview', (req, res) => {
 });
 
 router.post('/reviewList', (req, res) => {
-    console.log('review.js','/reviewList', JSON.stringify(req.body));
+    tools.log('review.js','/reviewList', JSON.stringify(req.body));
 
     let param = [];
     param.push(req.body.username);
-    console.log('review.js','/reviewList', 'param', param);
+    tools.log('review.js','/reviewList', 'param', param);
 
     db.conn().then((conn) => {
         conn.all(QUERY.UserReview_select, param, (err, rows) => {
             if (err) {
                 throw new Error(err.message);
             }
-            console.log('rows', rows)
+            tools.log('rows', rows)
 
             res.json({ret:1, reviewList:rows});
         });
@@ -115,20 +115,20 @@ router.post('/reviewList', (req, res) => {
 });
 
 router.post('/tradeItemList', (req, res) => {
-    console.log('review.js','/tradeItemList', JSON.stringify(req.body));
+    tools.log('review.js','/tradeItemList', JSON.stringify(req.body));
 
 
     let param = [];
     param.push(req.body.seller_username);
     param.push(req.user.username);
-    console.log('review.js','/tradeItemList', 'param', param);
+    tools.log('review.js','/tradeItemList', 'param', param);
 
     db.conn().then((conn) => {
         conn.all(QUERY.Item_select_one_which_I_bought, param, (err, rows) => {
             if (err) {
                 throw new Error(err.message);
             }
-            console.log('rows', rows)
+            tools.log('rows', rows)
 
             res.json({ret:1, tradeItemList:rows});
         });
