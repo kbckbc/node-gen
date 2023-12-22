@@ -1,7 +1,7 @@
 module.exports = {
   // This accepts rest parameter for an arbitrary amount of arguments
   log: (...msg) => {
-    let debug = false;
+    let debug = true;
     const STACK_FUNC_NAME = new RegExp(/\w+\.\w+:(\d+)/);
     let err = new Error();
     
@@ -18,7 +18,7 @@ module.exports = {
   },
 
   checkCSRF: (rcv_csrf, session_csrf) => {
-    this.log('checkCSRF', `[${rcv_csrf}]`, `[${session_csrf}]`);
+    console.log('checkCSRF', `[${rcv_csrf}]`, `[${session_csrf}]`);
 
     if(session_csrf == '' || rcv_csrf != session_csrf) {
       return {ret:0, msg:'CSRF detected!'};

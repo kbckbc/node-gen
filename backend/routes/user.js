@@ -105,7 +105,8 @@ router.post('/passwordChange', function(req, res, next) {
 
 
 router.post('/schoolChange', function(req, res, next) {
-  tools.log('user', '/schoolChange', 'req.body', req.body);
+  tools.log('/schoolChange', 'req.user', JSON.stringify(req.user));
+  tools.log('/schoolChange', 'req.body', JSON.stringify(req.user));
 
   // CSRF check
   csrf = checkCSRF(req.body.csrf, req.user.csrf);

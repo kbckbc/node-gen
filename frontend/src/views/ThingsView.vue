@@ -10,14 +10,14 @@
       <h2 v-else>My item List</h2>
     </header>
     <h2 v-if="data.items.length === 0">No items on the list :(</h2>
-    <div v-else v-for="item in data.items" :key="item._id" class="grid margin_bottom_20">
+    <div v-else v-for="item in data.items" :key="item.rid" class="grid margin_bottom_20">
       <div>
         <div>
           <code>{{ $func.formatStatus(item.status) }}</code>
           <sub><i class="material-icons font_size_20 color_red">favorite</i></sub>{{ item.favorite }}
         </div>
         <br>
-        <a @click="selectItemDetail(item._id)"><img :src="$hostname + item.image_names[0]" class="tv cursor_pointer" alt="Item image"></a>
+        <a @click="selectItemDetail(item.rid)"><img :src="$hostname + item.image_names[0]" class="tv cursor_pointer" alt="Item image"></a>
       </div>
       <div>
         <div>
@@ -102,14 +102,16 @@ export default {
         })
       }
     },
-    selectItemDetail (id) {
+    selectItemDetail (rid) {
+      console.log('selectItemDetail', 'rid:', rid)
+
       // do a deep copy before move on
       this.$store.state.itemList = JSON.parse(JSON.stringify(this.data.items))
       this.$store.state.touchEnd = this.touchEnd
       this.$store.state.startFrom = this.startFrom
 
       // go to a detail page
-      this.$router.push({ name: 'thingDetail', params: { id: id } })
+      this.$router.push({ name: 'thingDetail', params: { rid: rid } })
     }
   }
 }

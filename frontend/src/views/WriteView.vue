@@ -3,14 +3,14 @@
   <article>
     <header>
       <a @click="cancelItem()"><i class="material-icons float_left cursor_pointer font_size_50">arrow_back</i></a>
-      <h2 v-if="this.param_id !== ''">Edit item</h2>
+      <h2 v-if="this.param_rid !== ''">Edit item</h2>
       <h2 v-else>Write item</h2>
     </header>
     <form @submit.prevent="insertItem" method="POST">
       <div class="grid">
         <div>
           <label>Trade status
-            <select v-model="status" :disabled="this.param_id === ''">
+            <select v-model="status" :disabled="this.param_rid === ''">
               <option value="0" >Available</option>
               <option value="1" >During trade</option>
               <option value="2" >Sold</option>
@@ -19,7 +19,7 @@
         </div>
         <div v-if="status === '2'">
           <label><b>Who did you sell it to?</b>
-            <select v-model="buyer_username" :disabled="this.param_id === ''">
+            <select v-model="buyer_username" :disabled="this.param_rid === ''">
               <option v-for="(username, i) in commentUserList" :key="i" :value="username">
                 {{ username }}
               </option>
@@ -81,10 +81,10 @@ import axios from 'axios'
 export default {
   beforeMount () {
     // check whether this page is called from edit page or not
-    console.log('WriteView', 'beforeMount', this.$store.state.user.param_id)
-    if (this.$store.state.user.param_id !== undefined) { // if if's editing mode
-      this.param_id = this.$store.state.user.param_id
-      this.$store.state.user.param_id = ''
+    console.log('WriteView', 'beforeMount', this.$store.state.user.param_rid)
+    if (this.$store.state.user.param_rid !== undefined) { // if if's editing mode
+      this.param_rid = this.$store.state.user.param_rid
+      this.$store.state.user.param_rid = ''
 
       this.selectItemDetail()
       this.selectCommentList()
@@ -101,14 +101,14 @@ export default {
       description: '',
       image_names: [],
       images: [],
-      param_id: '',
+      param_rid: '',
       commentUserList: [],
       buyer_username: ''
     }
   },
   methods: {
     selectItemDetail () {
-      axios.post('/item/detail', { id: this.param_id }).then(res => {
+      axios.post('/item/detail', { rid: this.param_rid }).then(res => {
         console.log('WriteView', '/item/detail', JSON.stringify(res.data))
         this.title = res.data.detail.title
         this.status = res.data.detail.status
@@ -120,7 +120,7 @@ export default {
       })
     },
     selectCommentList () {
-      axios.post('/item/commentList', { id: this.param_id }).then(res => {
+      axios.post('/item/commentList', { rid: this.param_rid }).then(res => {
         console.log('WriteView', '/item/commentList', JSON.stringify(res.data))
         for (const comment of res.data.commentList) {
           this.commentUserList.push(comment.username)
@@ -203,7 +203,7 @@ export default {
       }
 
       // if this page is doing edit
-      if (this.param_id !== '') {
+      if (this.param_rid !== '') {
         // check whether the buyer is set or not
         if (this.status === '2' && this.buyer_username === '') {
           alert('Please set a buyer!')
@@ -211,7 +211,7 @@ export default {
         }
 
         // when editing, id is needed
-        arg.id = this.param_id
+        arg.rid = this.param_rid
         console.log('buyer_username', this.buyer_username)
         arg.buyer_username = this.buyer_username
         axios.post('/item/update', arg).then(res => {
@@ -261,7 +261,7 @@ export default {
       console.log('cancelItem', JSON.stringify(this.image_names))
       // if the page is doing writing
       // then delete uploaded image and go back
-      if (this.param_id === '' && this.image_names.length !== 0) {
+      if (this.param_rid === '' && this.image_names.length !== 0) {
         axios.post('/item/deleteImage', { image_names: this.image_names }).then(res => {
           console.log('cancelItem', '/item/deleteImage', JSON.stringify(res.data))
           if (res.data.ret === 1) {

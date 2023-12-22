@@ -72,7 +72,7 @@ router.post('/update', (req, res) => {
     // add some information more into the data object
     let data = [];
 
-    // UPDATE Item SET title = ?, status = ?, price = ?, location = ?, description = ?, image_names = ?, date = ?, buyer_username = ? WHERE _id = ?;
+    // UPDATE Item 
     data.push(req.body.title);
     data.push(req.body.status); // status 0:before selling, 1:during trade, 2:sold
     data.push(req.body.price);
@@ -81,7 +81,7 @@ router.post('/update', (req, res) => {
     data.push(req.body.image_names.join(','));
     data.push(Date.now());
     data.push(req.body.buyer_username);
-    data.push(req.body.id);
+    data.push(req.body.rid);
 
     tools.log('item.js','/update', 'data', data);
 
@@ -176,11 +176,10 @@ router.post('/detail', (req, res) => {
     tools.log('item.js','/detail', JSON.stringify(req.body));
 
     db.conn().then((conn) => {
-        conn.get(QUERY.Item_select_one, [req.body.id], (err, row) => {
+        conn.get(QUERY.Item_select_one, [req.body.rid], (err, row) => {
             if (err) {
                 throw new Error(err.message);
             }
-
             row.image_names = row.image_names.split(',');
 
             tools.log('item.js','/detail','result', row)
@@ -208,10 +207,10 @@ router.post('/insertComment', (req, res) => {
     }
 
     // add some information more into the data object
-    // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
+    // INSERT INTO ItemComment (item_rid, comment, status, date, username) values (?,?,?,?,?);
     let data = [];
 
-    data.push(req.body.item_id);
+    data.push(req.body.item_rid);
     data.push(req.body.comment);
     data.push(req.body.status);
     data.push(Date.now());
@@ -240,7 +239,7 @@ router.post('/deleteComment', (req, res) => {
       return;
     }
 
-    let data = [req.body._id];
+    let data = [req.body.rid];
     tools.log('item.js','/deleteComment', 'data', data);
 
     db.conn().then((conn) => {
@@ -258,7 +257,7 @@ router.post('/deleteComment', (req, res) => {
 router.post('/commentList', (req, res) => {
     tools.log('item.js','/commentList', JSON.stringify(req.body));
 
-    let data = [req.body.id];
+    let data = [req.body.rid];
     tools.log('item.js','/commentList', 'data', data);
 
     db.conn().then((conn) => {
@@ -286,7 +285,7 @@ router.post('/delete', (req, res) => {
     }
 
 
-    let data = [req.body._id];
+    let data = [req.body.rid];
     tools.log('item.js','/delete', 'param', data);
 
     db.conn().then((conn) => {
@@ -303,7 +302,7 @@ router.post('/delete', (req, res) => {
                     // }
                 });
             }
-            conn.run(QUERY.Item_delete, row._id, (err) => {
+            conn.run(QUERY.Item_delete, row.rid, (err) => {
                 if (err) {
                   console.error(err.message);
                 }
@@ -329,7 +328,7 @@ router.post('/addFavorite', (req, res) => {
 
     let param = 
     {   'username': req.user.username,
-        'id': req.body._id,
+        'rid': req.body.rid,
         'date': req.Date.now()    
     }
     addRemoveFavorite('dec', param, res)
@@ -348,7 +347,7 @@ router.post('/deleteFavorite', (req, res) => {
 
     let param = 
     {   'username': req.user.username,
-        'id': req.body._id,
+        'rid': req.body.rid,
         'date': Date.now()    
     }
     addRemoveFavorite('dec', param, res)
@@ -358,7 +357,7 @@ router.post('/selectFavorite', (req, res) => {
     tools.log('item.js','/selectFavorite', JSON.stringify(req.body));
 
 // add some information more into the data object
-    // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
+    // INSERT INTO ItemComment (item_rid, comment, status, date, username) values (?,?,?,?,?);
     let param = [];
     param.push(req.user.username);
 
@@ -387,7 +386,7 @@ router.post('/selectFavoriteYn', (req, res) => {
     tools.log('item.js','/selectFavoriteYn', JSON.stringify(req.body));
 
     db.conn().then((conn) => {
-        conn.get(QUERY.Favorite_select, [req.user.username, req.body.id], (err, row) => {
+        conn.get(QUERY.Favorite_select, [req.user.username, req.body.rid], (err, row) => {
             if (err) {
                 throw new Error(err.message);
             }
@@ -405,20 +404,20 @@ router.post('/selectFavoriteYn', (req, res) => {
 });
 
 // addRemoveFavorite: Add or remove from the favorite
-//   input: 'inc' or 'dec', {username, _id, date}
+//   input: 'inc' or 'dec', {username, rid, date}
 //   return: {ret: 0 or 1, msg: message}
 // 1. Check if it's already a favorite item or not
 // 2. Inc or dec the count from the Item
 // 3. Insert the id of the Item into the Favorite
 function addRemoveFavorite(type, argv, res) {
     // add some information more into the data object
-    // INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
+    // INSERT INTO ItemComment (item_rid, comment, status, date, username) values (?,?,?,?,?);
 
     tools.log('item.js','/addRemoveFavorite', 'argv', argv);
 
     let param = [];
     param.push(argv.username);
-    param.push(argv.id);
+    param.push(argv.rid);
 
     db.conn().then((conn) => {
         conn.get(QUERY.Favorite_select, param, (err, row) => {
@@ -429,7 +428,7 @@ function addRemoveFavorite(type, argv, res) {
 
             if((type=='inc' && row == undefined) || (type='dec' && row != undefined)) {
                 param = [];
-                param.push(argv.id);
+                param.push(argv.rid);
                             
                 tools.log('item.js','/addRemoveFavorite', 'param', param);
             
@@ -443,7 +442,7 @@ function addRemoveFavorite(type, argv, res) {
 
                         param = [];
                         param.push(argv.username);
-                        param.push(argv.id);
+                        param.push(argv.rid);
                         param.push(argv.date);
                                     
                         tools.log('item.js','/addRemoveFavorite', 'param', param);

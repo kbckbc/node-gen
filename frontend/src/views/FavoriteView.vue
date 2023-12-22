@@ -7,8 +7,8 @@
     </header>
     <h3 v-if="favoriteList.length === 0">No favorite items :(</h3>
     <ul v-else>
-      <li v-for="item in this.favoriteList" :key="item._id">
-        <a @click="selectItemDetail(item._id)"><img :src="$hostname + item.image_names[0]" class="tv cursor_pointer" alt="item image"></a>
+      <li v-for="item in this.favoriteList" :key="item.rid">
+        <a @click="selectItemDetail(item.rid)"><img :src="$hostname + item.image_names[0]" class="tv cursor_pointer" alt="item image"></a>
         <code>{{ $func.formatStatus(item.status) }}</code>
         <sub><i class="material-icons font_size_20 color_red">favorite</i></sub>{{ item.favorite }}
         [$ {{ item.price }}] {{ item.title }},
@@ -50,9 +50,9 @@ export default {
         console.log('selectFavoriteList', JSON.stringify(this.favoriteList))
       })
     },
-    selectItemDetail (id) {
-      console.log('id', id)
-      this.$router.push({ name: 'thingDetail', params: { id: id } })
+    selectItemDetail (rid) {
+      console.log('rid', rid)
+      this.$router.push({ name: 'thingDetail', params: { rid: rid } })
     }
   }
 }

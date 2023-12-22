@@ -2,3 +2,4 @@
 /public
 /uploads
 *.db
+sessions.db

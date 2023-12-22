@@ -25,7 +25,7 @@ router.post('/insertUserReview', (req, res) => {
     // data.buyer_username = req.user.username;
     // data.score = parseInt(data.score);
 
-    param.push(req.body.item_id)
+    param.push(req.body.item_rid)
     param.push(req.user.username)
 
     // INSERT INTO UserReview (username, score, comment, date, buyer_username) values (?,?,?,?,?);
@@ -77,7 +77,7 @@ router.post('/deleteUserReview', (req, res) => {
 
     let param = [];
 
-    param.push(req.body._id);
+    param.push(req.body.rid);
     tools.log('review.js','/deleteUserReview', 'data', param);
 
     db.conn().then((conn) => {

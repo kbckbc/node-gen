@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     user: {},
-    param_id: '',
+    param_rid: '',
     /* belows are for itemlist backup */
     itemList: [],
     touchEnd: 0,

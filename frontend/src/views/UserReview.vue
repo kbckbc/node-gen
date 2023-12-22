@@ -8,12 +8,12 @@
     <div v-else>
       <h4>Overall score<i class="material-icons color_orange">star</i>{{ avg_score }} out of 5</h4>
       <ul>
-          <li v-for="review of reviewList" :key="review._id">
+          <li v-for="review of reviewList" :key="review.rid">
           <sub><i class="material-icons font_size_30">person_outline</i></sub>{{ review.buyer_username }}
           <i class="material-icons color_orange">star</i>{{ review.score }},
           {{ $func.formatDate(review.date) }},
           {{ review.comment }}
-          <a v-if="$store.state.user.username === review.buyer_username" @click="deleteUserReview(review._id)"><sub><i class="material-icons cursor_pointer">delete</i></sub></a>
+          <a v-if="$store.state.user.username === review.buyer_username" @click="deleteUserReview(review.rid)"><sub><i class="material-icons cursor_pointer">delete</i></sub></a>
           </li>
       </ul>
     </div>
@@ -27,7 +27,7 @@
           <div>
             <label>Trade History
               <select v-model="tradeItemId" required>
-                <option v-for="(item, i) in tradeItemList" :key="i" :value="item._id">
+                <option v-for="(item, i) in tradeItemList" :key="i" :value="item.rid">
                   $ {{ item.price}}, {{ item.title }}
                 </option>
               </select>
@@ -116,7 +116,7 @@ export default {
       const data = {
         csrf: this.$store.state.user.csrf,
         username: this.sellerUsername,
-        item_id: this.tradeItemId,
+        item_rid: this.tradeItemId,
         score: this.score,
         comment: this.comment
       }
@@ -133,9 +133,9 @@ export default {
         }
       })
     },
-    deleteUserReview (id) {
-      console.log('deleteUserReview', id)
-      axios.post('/review/deleteUserReview', { _id: id }).then(res => {
+    deleteUserReview (rid) {
+      console.log('deleteUserReview', rid)
+      axios.post('/review/deleteUserReview', { rid: rid }).then(res => {
         console.log('UserReview', '/review/deleteUserReview', JSON.stringify(res.data))
         if (res.data.ret === 1) {
           this.selectUserReviewList()

@@ -59,11 +59,11 @@ tools.log('print:', process.env.VUE_APP_ROOT_API);
 
 
 // router
+app.use('/admin', require('./routes/admin'));
 app.use('/auth', require('./routes/auth')(passport));
 app.use('/user', require('./routes/user'));
 app.use('/item', require('./routes/item'));
 app.use('/review', require('./routes/review'));
-app.use('/admin', require('./routes/admin'));
 
 // start app
 const port = global.PORT;

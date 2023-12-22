@@ -3,7 +3,7 @@ const QUERY = {
   Item_create: `
     CREATE TABLE Item
     (
-      _id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rid INTEGER PRIMARY KEY AUTOINCREMENT,
       title          TEXT  NOT NULL,
       status         TEXT,
       price          INTEGER,
@@ -26,7 +26,7 @@ const QUERY = {
     SELECT * FROM Item where myschool = IFNULL(?, myschool) LIMIT IFNULL(?,0), IFNULL(?,99999);
   `,
   Item_select_one:`
-    SELECT * FROM Item where _id = ?;
+    SELECT * FROM Item where rid = ?;
   `,
   Item_select_one_which_I_bought:`
     SELECT * FROM Item where username = ? AND buyer_username = ?;
@@ -35,23 +35,23 @@ const QUERY = {
     INSERT INTO Item (title, status, price, myschool, location, description, image_names, username, date, favorite, buyer_username) values (?,?,?,?,?,?,?,?,?,?,?);
   `,
   Item_delete:`
-    DELETE FROM Item WHERE _id = (?);
+    DELETE FROM Item WHERE rid = (?);
   `,
   Item_update:`
-    UPDATE Item SET title = ?, status = ?, price = ?, location = ?, description = ?, image_names = ?, date = ?, buyer_username = ? WHERE _id = ?;
+    UPDATE Item SET title = ?, status = ?, price = ?, location = ?, description = ?, image_names = ?, date = ?, buyer_username = ? WHERE rid = ?;
   `,
   Item_inc_favorite:`
-    UPDATE Item SET favorite = favorite + 1 WHERE _id = ?;
+    UPDATE Item SET favorite = favorite + 1 WHERE rid = ?;
   `,  
   Item_dec_favorite:`
-    UPDATE Item SET favorite = favorite - 1 WHERE _id = ?;
+    UPDATE Item SET favorite = favorite - 1 WHERE rid = ?;
   `,  
   // TABLE: item_comment
   ItemComment_create: `
     CREATE TABLE ItemComment
     (
-      _id INTEGER PRIMARY KEY AUTOINCREMENT,
-      item_id  INTEGER,
+      rid INTEGER PRIMARY KEY AUTOINCREMENT,
+      item_rid  INTEGER,
       comment  TEXT NOT NULL,
       status   INTEGER,
       date     INTEGER,
@@ -62,19 +62,19 @@ const QUERY = {
     DROP TABLE ItemComment;
   `,
   ItemComment_select:`
-    SELECT * FROM ItemComment where item_id = ?;
+    SELECT * FROM ItemComment where item_rid = ?;
   `,
   ItemComment_insert:`
-    INSERT INTO ItemComment (item_id, comment, status, date, username) values (?,?,?,?,?);
+    INSERT INTO ItemComment (item_rid, comment, status, date, username) values (?,?,?,?,?);
   `,
   ItemComment_delete:`
-    DELETE FROM ItemComment WHERE _id = (?);
+    DELETE FROM ItemComment WHERE rid = (?);
   `,
   // TABLE: user
   User_create: `
     CREATE TABLE User
     (
-      _id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rid INTEGER PRIMARY KEY AUTOINCREMENT,
       username  TEXT UNIQUE,
       password  TEXT NOT NULL,
       email     TEXT NOT NULL,
@@ -99,13 +99,13 @@ const QUERY = {
     UPDATE User SET myschool = ? WHERE username = ?;
   `,  
   User_delete:`
-    DELETE FROM User WHERE _id = ?;
+    DELETE FROM User WHERE rid = ?;
   `,
   // TABLE: user_review
   UserReview_create: `
     CREATE TABLE UserReview
     (
-      _id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rid INTEGER PRIMARY KEY AUTOINCREMENT,
       username   TEXT NOT NULL,
       score      INTEGER,
       comment    TEXT NOT NULL,
@@ -123,15 +123,15 @@ const QUERY = {
     INSERT INTO UserReview (username, score, comment, date, buyer_username) values (?,?,?,?,?);
   `,
   UserReview_delete:`
-    DELETE FROM UserReview WHERE _id = ?;
+    DELETE FROM UserReview WHERE rid = ?;
   `,
   // TABLE: Favorite
   Favorite_create: `
     CREATE TABLE Favorite
     (
-      _id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rid INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL,
-      item_id  INTEGER NOT NULL,
+      item_rid  INTEGER NOT NULL,
       date     INTEGER
     );
   `,
@@ -139,16 +139,16 @@ const QUERY = {
     DROP TABLE Favorite;
   `,
   Favorite_select:`
-    SELECT * FROM Favorite WHERE username = ? and item_id = ?;
+    SELECT * FROM Favorite WHERE username = ? and item_rid = ?;
   `,
   Favorite_select_item_list:`
-    SELECT b.* FROM Favorite a, Item b WHERE a.item_id = b._id AND a.username = ?;
+    SELECT b.* FROM Favorite a, Item b WHERE a.item_rid = b.rid AND a.username = ?;
   `,
   Favorite_insert:`
-    INSERT INTO Favorite (username, item_id, date) VALUES (?,?,?);
+    INSERT INTO Favorite (username, item_rid, date) VALUES (?,?,?);
   `,
   Favorite_delete:`
-    DELETE FROM Favorite WHERE username = ? and item_id = ?;
+    DELETE FROM Favorite WHERE username = ? and item_rid = ?;
   `     
 };
 

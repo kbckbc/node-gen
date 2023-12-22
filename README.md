@@ -3,7 +3,7 @@ General app
 
 
 # item
-_id
+rid
 title
 status
 pricep
@@ -17,15 +17,15 @@ favorite
 buyer_username
 
 # item_comment
-_id
-item_id
+rid
+item_rid
 comment
 status
 date
 username
 
 # user
-_id
+rid
 username
 password
 email
@@ -33,16 +33,16 @@ myschool
 joindate
 
 # user_review
-_id
+rid
 username
-item_id
+item_rid
 score
 comment
 date
 buyer_username
 
 # favorite
-_id
+rid
 username
-item_id
+item_rid
 date
