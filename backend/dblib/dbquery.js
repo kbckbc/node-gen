@@ -62,7 +62,7 @@ const QUERY = {
     DROP TABLE ItemComment;
   `,
   ItemComment_select:`
-    SELECT * FROM ItemComment where item_rid = ?;
+    SELECT * FROM ItemComment where item_rid = IFNULL(?, item_rid);
   `,
   ItemComment_insert:`
     INSERT INTO ItemComment (item_rid, comment, status, date, username) values (?,?,?,?,?);
@@ -117,7 +117,7 @@ const QUERY = {
     DROP TABLE UserReview;
   `,
   UserReview_select:`
-    SELECT * FROM UserReview WHERE username = ?;
+    SELECT * FROM UserReview WHERE username = IFNULL(?, username);
   `,
   UserReview_insert:`
     INSERT INTO UserReview (username, score, comment, date, buyer_username) values (?,?,?,?,?);
@@ -139,7 +139,7 @@ const QUERY = {
     DROP TABLE Favorite;
   `,
   Favorite_select:`
-    SELECT * FROM Favorite WHERE username = ? and item_rid = ?;
+    SELECT * FROM Favorite WHERE username = IFNULL(?, username) and item_rid = IFNULL(?, item_rid);
   `,
   Favorite_select_item_list:`
     SELECT b.* FROM Favorite a, Item b WHERE a.item_rid = b.rid AND a.username = ?;

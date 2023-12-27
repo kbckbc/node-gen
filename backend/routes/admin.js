@@ -127,7 +127,62 @@ router.get('/Item', function(req, res, next) {
   tools.log('admin', '/Item', 'QUERY.Item_select', QUERY.Item_select);
 
   db.conn().then((conn) => {
-    conn.all(QUERY.Item_select, [null, 0,99999], (err, rows) => {
+    conn.all(QUERY.Item_select, [null, null, null], (err, rows) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+      tools.log(`rows ${JSON.stringify(rows)}`)
+
+      res.send(JSON.stringify(rows));
+    });
+  }).catch((e) => {
+    console.error(e.message); // "oh, no!"
+  })
+});
+
+
+router.get('/ItemComment', function(req, res, next) {
+  tools.log('/ItemComment', 'req.query', req.query);
+  tools.log('/ItemComment', 'QUERY.ItemComment_select', QUERY.ItemComment_select);
+
+  db.conn().then((conn) => {
+    conn.all(QUERY.ItemComment_select, [null], (err, rows) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+      tools.log(`rows ${JSON.stringify(rows)}`)
+
+      res.send(JSON.stringify(rows));
+    });
+  }).catch((e) => {
+    console.error(e.message); // "oh, no!"
+  })
+});
+
+router.get('/Favorite', function(req, res, next) {
+  tools.log('/Favorite', 'req.query', req.query);
+  tools.log('/Favorite', 'QUERY.Favorite_select', QUERY.Favorite_select);
+
+  db.conn().then((conn) => {
+    conn.all(QUERY.Favorite_select, [null, null], (err, rows) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+      tools.log(`rows ${JSON.stringify(rows)}`)
+
+      res.send(JSON.stringify(rows));
+    });
+  }).catch((e) => {
+    console.error(e.message); // "oh, no!"
+  })
+});
+
+router.get('/UserReview', function(req, res, next) {
+  tools.log('/UserReview', 'req.query', req.query);
+  tools.log('/UserReview', 'QUERY.UserReview_select', QUERY.UserReview_select);
+
+  db.conn().then((conn) => {
+    conn.all(QUERY.UserReview_select, [null], (err, rows) => {
       if (err) {
         throw new Error(err.message);
       }
