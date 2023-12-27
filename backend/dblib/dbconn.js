@@ -1,4 +1,4 @@
-const dbFilePath = "./sqlite.db";
+const dbFilePath = "/uploads/sqlite.db";
 const fs = require("fs");
 const sqlite3 = require("sqlite3").verbose();
 const QUERY = require('./dbquery.js');
@@ -33,6 +33,7 @@ db.conn = function () {
         connection.exec(QUERY.UserReview_create);
         connection.exec(QUERY.Favorite_create);
         
+        tools.log('global.UPLOAD_FOLDER', global.UPLOAD_FOLDER);
         tools.log(`Connection with SQLite has been established - New DB creation, connection [${connection}]`);
       }
     }
