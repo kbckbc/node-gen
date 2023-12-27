@@ -17,10 +17,11 @@
           </li>
       </ul>
     </div>
-    <!-- Cannot write about myself -->
+    <!-- Login first to leave a comment -->
     <footer v-if="$store.state.user.username === undefined">
       <b>Singup to leave a comment to the seller</b>
     </footer>
+    <!-- Cannot write about myself -->
     <footer v-else-if="$store.state.user.username !== sellerUsername">
         <form @submit.prevent="insertUserReview" method="POST">
         <div class="grid">
@@ -137,8 +138,12 @@ export default {
       })
     },
     deleteUserReview (rid) {
-      console.log('deleteUserReview', rid)
-      axios.post('/review/deleteUserReview', { rid: rid }).then(res => {
+      const data = {
+        csrf: this.$store.state.user.csrf,
+        rid: rid
+      }
+      console.log('deleteUserReview', data)
+      axios.post('/review/deleteUserReview', data).then(res => {
         console.log('UserReview', '/review/deleteUserReview', JSON.stringify(res.data))
         if (res.data.ret === 1) {
           this.selectUserReviewList()

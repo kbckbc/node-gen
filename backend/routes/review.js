@@ -66,7 +66,8 @@ router.post('/insertUserReview', (req, res) => {
 });
 
 router.post('/deleteUserReview', (req, res) => {
-    tools.log('review.js','/deleteUserReview', JSON.stringify(req.body));
+    tools.log('review.js','/deleteUserReview', 'body', JSON.stringify(req.body));
+    tools.log('review.js','/deleteUserReview', 'user', JSON.stringify(req.user));
 
     // CSRF check
     csrf = checkCSRF(req.body.csrf, req.user.csrf);
@@ -78,10 +79,10 @@ router.post('/deleteUserReview', (req, res) => {
     let param = [];
 
     param.push(req.body.rid);
-    tools.log('review.js','/deleteUserReview', 'data', param);
+    tools.log('review.js','/deleteUserReview', 'param', param);
 
     db.conn().then((conn) => {
-        conn.run(QUERY.UserReview_delete, data, (err) => {
+        conn.run(QUERY.UserReview_delete, param, (err) => {
             if (err) {
               console.error(err.message);
             }
