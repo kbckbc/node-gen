@@ -80,7 +80,10 @@ export default {
   },
   beforeMount () {
     this.selectUserReviewList()
-    this.selectTradeItemList()
+    // when not logged in, no need to call this func
+    if (this.$store.state.user.username !== undefined) {
+      this.selectTradeItemList()
+    }
   },
   methods: {
     selectUserReviewList () {

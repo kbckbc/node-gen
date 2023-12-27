@@ -329,9 +329,9 @@ router.post('/addFavorite', (req, res) => {
     let param = 
     {   'username': req.user.username,
         'rid': req.body.rid,
-        'date': req.Date.now()    
+        'date': Date.now()    
     }
-    addRemoveFavorite('dec', param, res)
+    addRemoveFavorite('inc', param, res)
 });
 
 router.post('/deleteFavorite', (req, res) => {
@@ -413,6 +413,7 @@ function addRemoveFavorite(type, argv, res) {
     // add some information more into the data object
     // INSERT INTO ItemComment (item_rid, comment, status, date, username) values (?,?,?,?,?);
 
+    console.log('argv', argv);
     tools.log('item.js','/addRemoveFavorite', 'argv', argv);
 
     let param = [];
@@ -443,7 +444,7 @@ function addRemoveFavorite(type, argv, res) {
                         param = [];
                         param.push(argv.username);
                         param.push(argv.rid);
-                        param.push(argv.date);
+                        if(type== 'inc') param.push(argv.date);
                                     
                         tools.log('item.js','/addRemoveFavorite', 'param', param);
                     
